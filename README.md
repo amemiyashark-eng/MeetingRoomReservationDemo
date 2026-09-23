@@ -19,6 +19,18 @@ AWS (EC2 / RDS) 上にデプロイし、動作確認を完了しています。�
 - **言語 / FW:** Java 21, Spring Boot 3.1.1, Spring Security, Thymeleaf
 - **データベース:** PostgreSQL (RDS)
 - **インフラ / クラウド:** AWS (EC2, RDS)
+
+## システム構成図 (AWS)
+
+```mermaid
+graph TD
+    Client[クライアント / ブラウザ] -->|HTTP / Port:8080| EC2[AWS EC2 <br/> Spring Boot Web App]
+    EC2 -->|PostgreSQL / Port:5432| RDS[(AWS RDS <br/> PostgreSQL)]
+    
+    subgraph VPC[VPC Security Group]
+        EC2
+        RDS
+    end
 - **ビルドツール:** Maven
 
 ## インフラ・開発の工夫
