@@ -5,7 +5,7 @@ AWS (EC2 / RDS) 上にデプロイし、動作確認を完了しています。�
 
 ## 動作デモ
 
-<img width="1376" height="728" alt="Animation" src="[https://github.com/user-attachments/assets/3d116d11-4749-4e4a-8558-3e617a4e9ad3](https://github.com/user-attachments/assets/3d116d11-4749-4e4a-8558-3e617a4e9ad3)" />
+<img width="1376" height="728" alt="Animation" src="https://github.com/user-attachments/assets/3d116d11-4749-4e4a-8558-3e617a4e9ad3" />(https://github.com/user-attachments/assets/3d116d11-4749-4e4a-8558-3e617a4e9ad3)" />
 
 ## 主な機能・バリデーション制御
 - **ユーザー認証・認可:** Spring Securityによるログイン制御（一般ユーザー / 管理者権限）
