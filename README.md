@@ -32,3 +32,28 @@ graph TD
         EC2
         RDS
     end
+    erDiagram
+    EMPLOYEES ||--o{ RESERVATIONS : "予約を作成"
+    MEETING_ROOMS ||--o{ RESERVATIONS : "予約される"
+
+    EMPLOYEES {
+        bigint id PK
+        varchar name "社員名"
+        varchar email "メールアドレス"
+        varchar role "権限 (USER / ADMIN)"
+    }
+
+    MEETING_ROOMS {
+        bigint id PK
+        varchar room_name "会議室名"
+        int capacity "収容人数"
+    }
+
+    RESERVATIONS {
+        bigint id PK
+        bigint employee_id FK
+        bigint meeting_room_id FK
+        date reservation_date "予約日"
+        time start_time "開始時間"
+        time end_time "終了時間"
+    }
