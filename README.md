@@ -5,15 +5,15 @@ AWS (EC2 / RDS) 上にデプロイし、動作確認を完了しています。�
 
 ## 動作デモ
 
-<img width="1376" height="728" alt="Animation" src="https://github.com/user-attachments/assets/3d116d11-4749-4e4a-8558-3e617a4e9ad3" />
+<img width="1376" height="728" alt="Animation" src="[https://github.com/user-attachments/assets/3d116d11-4749-4e4a-8558-3e617a4e9ad3](https://github.com/user-attachments/assets/3d116d11-4749-4e4a-8558-3e617a4e9ad3)" />
 
 ## 主な機能・バリデーション制御
 - **ユーザー認証・認可:** Spring Securityによるログイン制御（一般ユーザー / 管理者権限）
 - **会議室一覧・予約機能:** 日付ごとの空き状況確認、新規予約登録
 - **入力チェック（バリデーション機能）:**
-  - **過去日制御:** 過去の日付は選択不可
-  - **時間整合性チェック:** 予約の「開始時間」が「終了時間」より後になっている場合はエラー表示
-  - **重複予約防止:** 同一会議室で既存の予約時間帯と重なる申請はエラー表示し、DBの整合性を保護
+  - **過去日制御:** 過去の日付は選択不可
+  - **時間整合性チェック:** 予約の「開始時間」が「終了時間」より後になっている場合はエラー表示
+  - **重複予約防止:** 同一会議室で既存の予約時間帯と重なる申請はエラー表示し、DBの整合性を保護
 
 ## 使用技術
 - **言語 / FW:** Java 21, Spring Boot 3.1.1, Spring Security, Thymeleaf
@@ -25,10 +25,43 @@ AWS (EC2 / RDS) 上にデプロイし、動作確認を完了しています。�
 
 ```mermaid
 graph TD
-    Client[クライアント / ブラウザ] -->|HTTP / Port:8080| EC2[AWS EC2 <br/> Spring Boot Web App]
-    EC2 -->|PostgreSQL / Port:5432| RDS[(AWS RDS <br/> PostgreSQL)]
-    
-    subgraph VPC[VPC Security Group]
-        EC2
-        RDS
-    end
+    Client[クライアント / ブラウザ] -->|HTTP / Port:8080| EC2[AWS EC2 <br/> Spring Boot Web App]
+    EC2 -->|PostgreSQL / Port:5432| RDS[(AWS RDS <br/> PostgreSQL)]
+    
+    subgraph VPC[VPC Security Group]
+        EC2
+        RDS
+    end
+```
+
+## データベース設計 (ER図)
+```mermaid
+erDiagram
+    EMPLOYEES ||--o{ RESERVATIONS : "予約を作成"
+    MEETING_ROOMS ||--o{ RESERVATIONS : "予約される"
+
+    EMPLOYEES {
+        bigint id PK
+        varchar name "社員名"
+        varchar email "メールアドレス"
+        varchar role "権限 (USER / ADMIN)"
+    }
+
+    MEETING_ROOMS {
+        bigint id PK
+        varchar room_name "会議室名"
+        int capacity "収容人数"
+    }
+
+    RESERVATIONS {
+        bigint id PK
+        bigint employee_id FK
+        bigint meeting_room_id FK
+        date reservation_date "予約日"
+        time start_time "開始時間"
+        time end_time "終了時間"
+    }
+```
+## インフラ・開発の工夫
+- セキュリティ構成: EC2（アプリ層）とRDS（DB層）を分離し、RDSへはEC2からのセキュリティグループ経由のみアクセスを許可する安全なネットワーク構成を構築。
+- データ保護: アプリケーション側での時間重複チェックおよびDB制御により、不正なデータの登録を未然に防ぐ設計。
