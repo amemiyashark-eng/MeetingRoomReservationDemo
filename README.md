@@ -37,30 +37,35 @@ graph TD
 ## データベース設計 (ER図)
 ```mermaid
 erDiagram
-    EMPLOYEES ||--o{ RESERVATIONS : "予約を作成"
-    MEETING_ROOMS ||--o{ RESERVATIONS : "予約される"
+    mt_user ||--o{ reservation : "予約を作成"
+    mt_room ||--o{ reservable_room : "予約可能日を設定"
+    reservable_room ||--o{ reservation : "対象日に予約"
 
-    EMPLOYEES {
-        bigint id PK
-        varchar name "社員名"
-        varchar email "メールアドレス"
-        varchar role "権限 (USER / ADMIN)"
-    }
+    mt_room {
+        serial room_id PK "会議室ID"
+        varchar room_name "会議室名"
+    }
 
-    MEETING_ROOMS {
-        bigint id PK
-        varchar room_name "会議室名"
-        int capacity "収容人数"
-    }
+    reservable_room {
+        date reserved_date PK "予約日"
+        integer room_id PK,FK "会議室ID"
+    }
 
-    RESERVATIONS {
-        bigint id PK
-        bigint employee_id FK
-        bigint meeting_room_id FK
-        date reservation_date "予約日"
-        time start_time "開始時間"
-        time end_time "終了時間"
-    }
+    mt_user {
+        varchar user_id PK "ユーザーID"
+        varchar user_name "ユーザー名"
+        varchar password "パスワード"
+        varchar role_name "役割"
+    }
+
+    reservation {
+        serial reservation_id PK "予約ID"
+        time start_time "開始時間"
+        time end_time "終了時間"
+        date reserved_date FK "予約日"
+        integer room_id FK "会議室ID"
+        varchar user_id FK "ユーザーID"
+    }
 ```
 ## インフラ・開発の工夫
 - セキュリティ構成: EC2（アプリ層）とRDS（DB層）を分離し、RDSへはEC2からのセキュリティグループ経由のみアクセスを許可する安全なネットワーク構成を構築。
